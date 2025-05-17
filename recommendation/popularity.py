@@ -3,13 +3,15 @@ import numpy as np
 from datetime import datetime
 from elasticsearch import Elasticsearch
 import logging
-from datetime import timezone
+from sentiment_analyzer import SentimentAnalyzer
+
 logger = logging.getLogger(__name__)
 
 
 class PopularityRecommender:
     def __init__(self, es_client: Elasticsearch):
         self.es = es_client
+        self.sentiment_analyzer = SentimentAnalyzer()
 
     def _get_song_data(self, song_id: str) -> Dict[str, Any]:
         """Get song data including metadata."""
@@ -21,7 +23,7 @@ class PopularityRecommender:
             return {}
 
     def _calculate_popularity_score(self, song: Dict[str, Any]) -> float:
-        """Calculate popularity score based on multiple metrics."""
+        """Calculate popularity score based on multiple metrics including sentiment analysis."""
         try:
             # Get engagement metrics
             view_count = song.get('viewCount', 0)
@@ -32,16 +34,25 @@ class PopularityRecommender:
             release_date = song.get('releaseDate')
             if release_date:
                 release_date = datetime.fromisoformat(release_date.replace('Z', '+00:00'))
-                days_old = (datetime.now(timezone.utc) - release_date).days
+                days_old = (datetime.now() - release_date).days
                 time_decay = 1.0 / (1.0 + np.log1p(days_old))  # Logarithmic decay
             else:
                 time_decay = 0.5  # Default for songs without release date
 
+            # Calculate sentiment score
+            comments = song.get('comments', [])
+            sentiment_score = 0.5  # Default neutral score
+            if comments:
+                sentiment_stats = self.sentiment_analyzer.analyze_comments(comments)
+                # Normalize sentiment score (1-5 scale to 0-1)
+                sentiment_score = (sentiment_stats['average_sentiment'] - 1) / 4
+
             # Calculate weighted score
             weights = {
-                'views': 0.4,
-                'reactions': 0.3,
+                'views': 0.3,
+                'reactions': 0.2,
                 'comments': 0.2,
+                'sentiment': 0.2,
                 'time_decay': 0.1
             }
 
@@ -59,6 +70,7 @@ class PopularityRecommender:
                     weights['views'] * normalized_views +
                     weights['reactions'] * normalized_reactions +
                     weights['comments'] * normalized_comments +
+                    weights['sentiment'] * sentiment_score +
                     weights['time_decay'] * time_decay
             )
 
@@ -93,4 +105,4 @@ class PopularityRecommender:
 
         except Exception as e:
             logger.error(f"Error generating recommendations: {str(e)}")
-            return [] 
+            return [],
