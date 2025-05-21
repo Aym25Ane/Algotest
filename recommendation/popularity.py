@@ -30,13 +30,19 @@ class PopularityRecommender:
             reaction_count = song.get('totalReactionCount', 0)
             comment_count = song.get('commentCount', 0)
 
-            # Calculate time decay factor
+            # Calculate time decay factor and normalize views by time
             release_date = song.get('releaseDate')
             if release_date:
                 release_date = datetime.fromisoformat(release_date.replace('Z', '+00:00'))
                 days_old = (datetime.now() - release_date).days
+
+                # Calculate views per day
+                views_per_day = view_count / (days_old + 1)  # +1 to avoid division by zero
+
+                # Calculate time decay
                 time_decay = 1.0 / (1.0 + np.log1p(days_old))  # Logarithmic decay
             else:
+                views_per_day = view_count
                 time_decay = 0.5  # Default for songs without release date
 
             # Calculate sentiment score
@@ -57,11 +63,11 @@ class PopularityRecommender:
             }
 
             # Normalize metrics
-            max_views = 10000  # Example max value
+            max_views_per_day = 100  # Example max value for views per day
             max_reactions = 1000
             max_comments = 500
 
-            normalized_views = min(view_count / max_views, 1.0)
+            normalized_views = min(views_per_day / max_views_per_day, 1.0)
             normalized_reactions = min(reaction_count / max_reactions, 1.0)
             normalized_comments = min(comment_count / max_comments, 1.0)
 
