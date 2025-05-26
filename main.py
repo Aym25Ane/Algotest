@@ -4,8 +4,8 @@ from api.elasticsearch_client import ElasticsearchClient
 from recommendation.content_based import ContentBasedRecommender
 from recommendation.collaborative import CollaborativeRecommender
 from recommendation.popularity import PopularityRecommender
-from recommendation.hybrid import HybridRecommender
-from conf.conf import settings
+from recommendation.hybrid_recommender import HybridRecommender
+from config.config import settings
 import logging
 from typing import List
 import traceback
@@ -19,7 +19,6 @@ app = FastAPI(title="Music Recommendation System")
 # Initialize Elasticsearch client
 try:
     es_client = ElasticsearchClient()
-    raw_es = es_client.es
     logger.info("Successfully connected to Elasticsearch")
 except Exception as e:
     logger.error(f"Failed to connect to Elasticsearch: {str(e)}")
@@ -27,10 +26,10 @@ except Exception as e:
 
 # Initialize recommenders
 try:
-    content_recommender = ContentBasedRecommender(raw_es)
-    collab_recommender = CollaborativeRecommender(raw_es)
-    popularity_recommender = PopularityRecommender(raw_es)
-    hybrid_recommender = HybridRecommender(raw_es)
+    content_recommender = ContentBasedRecommender(es_client)
+    collab_recommender = CollaborativeRecommender(es_client)
+    popularity_recommender = PopularityRecommender(es_client)
+    hybrid_recommender = HybridRecommender(es_client)
     logger.info("Successfully initialized all recommenders")
 except Exception as e:
     logger.error(f"Failed to initialize recommenders: {str(e)}")

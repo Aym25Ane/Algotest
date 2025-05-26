@@ -1,7 +1,7 @@
 from elasticsearch import Elasticsearch
 from typing import List, Dict, Optional
 from models.models import Song, Reaction, User
-from conf.conf import settings
+from config.config import settings
 import logging
 
 logger = logging.getLogger(__name__)
@@ -11,8 +11,7 @@ class ElasticsearchClient:
         try:
             self.es = Elasticsearch([{
                 'host': settings.ELASTICSEARCH_HOST,
-                'port': settings.ELASTICSEARCH_PORT,
-                'scheme': settings.ELASTICSEARCH_SHEMA
+                'port': settings.ELASTICSEARCH_PORT
             }])
             # Test the connection
             if not self.es.ping():
