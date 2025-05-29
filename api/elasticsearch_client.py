@@ -1,7 +1,7 @@
 from elasticsearch import Elasticsearch
 from typing import List, Dict, Optional
 from models.models import Song, Reaction, User
-from config.config import settings
+from conf.conf import settings
 import logging
 
 logger = logging.getLogger(__name__)
