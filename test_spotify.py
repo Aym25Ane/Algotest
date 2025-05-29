@@ -7,9 +7,10 @@ from spotipy.oauth2 import SpotifyOAuth
 from config import SPOTIFY_CONFIG
 from kafka import KafkaProducer
 import json
-from spotify_sync import SpotifyKafkaSync
+from spotify_sync import SpotifySync
 from kafka_consumer import RecommendationConsumer
 from recommendation.hybrid_recommender import HybridRecommender
+from recommendation.sentiment_analyzer import SentimentAnalyzer
 
 # Charger les variables d'environnement si besoin
 load_dotenv()

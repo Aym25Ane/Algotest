@@ -10,7 +10,8 @@ from datetime import datetime
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 from kafka import KafkaProducer
-from config import SPOTIFY_CONFIG, ELASTICSEARCH_CONFIG, KAFKA_CONFIG
+from config import SPOTIFY_CONFIG, ES_CONFIG , KAFKA_CONFIG
+from recommendation.sentiment_analyzer import SentimentAnalyzer
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

@@ -6,6 +6,8 @@ import logging
 from .content_based import ContentBasedRecommender
 from .collaborative import CollaborativeRecommender
 from .popularity import PopularityRecommender
+from recommendation.sentiment_analyzer import SentimentAnalyzer
+
 
 logger = logging.getLogger(__name__)
 

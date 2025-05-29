@@ -3,7 +3,7 @@ import numpy as np
 from datetime import datetime
 from elasticsearch import Elasticsearch
 import logging
-from sentiment_analyzer import SentimentAnalyzer
+from recommendation.sentiment_analyzer import SentimentAnalyzer
 
 logger = logging.getLogger(__name__)
 
