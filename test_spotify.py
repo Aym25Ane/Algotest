@@ -4,13 +4,13 @@ import requests
 from dotenv import load_dotenv
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
-from config import SPOTIFY_CONFIG
+from config import SPOTIFY_CONFIG, ES_CONFIG
 from kafka import KafkaProducer
 import json
 from spotify_sync import SpotifySync
 from kafka_consumer import RecommendationConsumer
 from recommendation.hybrid_recommender import HybridRecommender
-from recommendation.sentiment_analyzer import SentimentAnalyzer
+from elasticsearch import Elasticsearch
 
 # Charger les variables d'environnement si besoin
 load_dotenv()
@@ -121,8 +121,22 @@ def main():
     user_id = "votre_user_id"
     sync.sync_user_history(user_id)
 
-    # Initialiser le consommateur
-    consumer = RecommendationConsumer()
+    # Initialisation Elasticsearch
+    es_client = Elasticsearch([ES_CONFIG['host']])
+
+    # Initialisation SpotifySync
+    spotify_sync = SpotifySync(
+        client_id=SPOTIFY_CONFIG['client_id'],
+        client_secret=SPOTIFY_CONFIG['client_secret'],
+        es_client=es_client
+    )
+
+    # Initialisation RecommendationConsumer
+    consumer = RecommendationConsumer(
+        kafka_bootstrap_servers=['localhost:9092'],  # adapte selon ta config
+        es_client=es_client,
+        spotify_sync=spotify_sync
+    )
 
     # Démarrer le traitement
     consumer.process_events()

@@ -12,7 +12,7 @@ class Settings(BaseSettings):
     # Spring Boot application settings
     SPRING_APP_NAME: str = "PFA_Back"
     SPRING_SERVER_PORT: int = 8080
-    FILE_BASE_URL: str = "https://localhost:8080"
+    FILE_BASE_URL: str = "http://localhost:8080"
     UPLOAD_DIR_AUDIO: str = "uploads/audio"
     UPLOAD_DIR_IMAGES: str = "uploads/images"
 
