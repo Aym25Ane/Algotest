@@ -27,7 +27,7 @@ SPOTIFY_CONFIG = {
 
 # Elasticsearch Configuration
 ES_CONFIG = {
-    'host': ['http://localhost:9200'],
+    'hosts': ['http://localhost:9200'],
     'index_prefix': 'spotify_'
 }
 

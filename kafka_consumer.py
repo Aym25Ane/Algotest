@@ -144,7 +144,7 @@ class SpotifyDataCollector:
         ))
 
         # Initialiser Elasticsearch
-        self.es = Elasticsearch([ES_CONFIG ['host']])
+        self.es =  Elasticsearch(ES_CONFIG['hosts'])
 
     def fetch_and_index_song(self, track_id):
         """Récupère et indexe les données d'une chanson"""

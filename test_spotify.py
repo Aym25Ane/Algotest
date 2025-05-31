@@ -1,3 +1,4 @@
+import asyncio
 import os
 import logging
 import requests
@@ -122,7 +123,7 @@ def main():
     sync.sync_user_history(user_id)
 
     # Initialisation Elasticsearch
-    es_client = Elasticsearch([ES_CONFIG['host']])
+    es_client = Elasticsearch(ES_CONFIG['hosts'])
 
     # Initialisation SpotifySync
     spotify_sync = SpotifySync(
@@ -139,7 +140,7 @@ def main():
     )
 
     # Démarrer le traitement
-    consumer.process_events()
+    asyncio.run(consumer.start())
 
 
 if __name__ == "__main__":
