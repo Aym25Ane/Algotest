@@ -5,7 +5,7 @@ from recommendation.content_based import ContentBasedRecommender
 from recommendation.collaborative import CollaborativeRecommender
 from recommendation.popularity import PopularityRecommender
 from recommendation.hybrid_recommender import HybridRecommender
-from config.config import settings
+from conf.conf import settings
 import logging
 from typing import List
 import traceback

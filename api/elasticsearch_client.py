@@ -11,7 +11,8 @@ class ElasticsearchClient:
         try:
             self.es = Elasticsearch([{
                 'host': settings.ELASTICSEARCH_HOST,
-                'port': settings.ELASTICSEARCH_PORT
+                'port': settings.ELASTICSEARCH_PORT,
+                "scheme": "http"
             }])
             # Test the connection
             if not self.es.ping():
